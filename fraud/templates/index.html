@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fraud Detection System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0a0a0f;
+            --card-bg: rgba(16, 16, 24, 0.95);
+            --text-color: #e1e1ff;
+            --accent-color: #4f46e5;
+            --accent-glow: #4f46e533;
+            --error-color: #dc2626;
+            --success-color: #059669;
+            --input-bg: rgba(30, 30, 45, 0.6);
+            --neon-shadow: 0 0 15px var(--accent-glow);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        .background-video {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -1;
+            filter: blur(8px) brightness(0.3);
+        }
+        
+        .container {
+            background-color: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            animation: containerGlow 4s infinite alternate;
+        }
+
+        @keyframes containerGlow {
+            0% { box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4); }
+            100% { box-shadow: 0 8px 32px var(--accent-glow); }
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            color: var(--text-color);
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px var(--accent-glow);
+        }
+        
+        .form-group {
+            margin-bottom: 1.8rem;
+            position: relative;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            color: rgba(225, 225, 255, 0.8);
+        }
+        
+        input {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            font-size: 1rem;
+            font-family: 'Space Grotesk', sans-serif;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px var(--accent-glow);
+        }
+        
+        button {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--accent-color), #6366f1);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Space Grotesk', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--accent-glow);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+        
+        #result {
+            margin-top: 2rem;
+            padding: 1.2rem;
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fraud {
+            background-color: rgba(220, 38, 38, 0.2);
+            border: 1px solid var(--error-color);
+            color: #fecaca;
+        }
+        
+        .legitimate {
+            background-color: rgba(5, 150, 105, 0.2);
+            border: 1px solid var(--success-color);
+            color: #a7f3d0;
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 1rem;
+            top: 2.8rem;
+            color: rgba(225, 225, 255, 0.4);
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+    <script src="https://kit.fontawesome.com/your-code.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <video autoplay muted loop playsinline class="background-video">
+        <source src="/static/portfolio.mp4" type="video/mp4">
+    </video>
+    
+    <div class="container">
+        <h1>Fraud Detection System</h1>
+        <div class="form-group">
+            <label for="date">Transaction Date</label>
+            <input type="date" id="date" required>
+            <i class="fas fa-calendar input-icon"></i>
+        </div>
+        <div class="form-group">
+            <label for="time">Transaction Time</label>
+            <input type="time" id="time" required>
+            <i class="fas fa-clock input-icon"></i>
+        </div>
+        <div class="form-group">
+            <label for="amount">Transaction Amount ($)</label>
+            <input type="number" id="amount" step="0.01" required placeholder="Enter amount...">
+            <i class="fas fa-dollar-sign input-icon"></i>
+        </div>
+        <button onclick="checkTransaction()">
+            Analyze Transaction
+        </button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        async function checkTransaction() {
+            const date = document.getElementById('date').value;
+            const time = document.getElementById('time').value;
+            const amount = document.getElementById('amount').value;
+            const button = document.querySelector('button');
+            
+            if (!date || !time || !amount) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            try {
+                button.innerHTML = 'Analyzing...';
+                button.disabled = true;
+                
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ date, time, amount }),
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    const resultDiv = document.getElementById('result');
+                    resultDiv.style.display = 'block';
+                    resultDiv.className = data.is_fraud ? 'fraud' : 'legitimate';
+                    
+                    const icon = data.is_fraud ? '⚠️' : '✅';
+                    const status = data.is_fraud ? 'Fraudulent' : 'Legitimate';
+                    
+                    resultDiv.innerHTML = `
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem">${icon}</div>
+                        <strong>${status} Transaction</strong><br>
+                        <span style="opacity: 0.9">Probability of Fraud: ${data.fraud_probability}%</span>
+                    `;
+                } else {
+                    throw new Error(data.error || 'Something went wrong');
+                }
+            } catch (error) {
+                alert(error.message);
+            } finally {
+                button.innerHTML = 'Analyze Transaction';
+                button.disabled = false;
+            }
+        }
+
+        // Add input animations
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.style.transform = 'translateY(-2px)';
+            });
+            
+            input.addEventListener('blur', () => {
+                input.parentElement.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>
